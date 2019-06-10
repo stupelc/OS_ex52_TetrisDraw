@@ -132,6 +132,8 @@ int canMove(int leftPos, int rightPos) {
  */
 void UpdateShapeLocation(int key) {
     //move the rectangle on the board according to the key
+    // clear the board and initialize a new one
+    system("clear");
 
     switch (key){
         case RIGHT_KEY: {
@@ -212,7 +214,6 @@ void UpdateShapeLocation(int key) {
         }
             break;
     }
-
 }
 
 /**
@@ -224,7 +225,10 @@ void usr2_readInput(int sigNum) {
     char key = (char) getchar();
     //check if the user quit from the game
     if (key == QUIT_KEY) {
-        exit(0);
+        running = 0;
+        if(close(STDIN_FILENO) == -1)
+            WRITE_ERROR
+        exit(EXIT_SUCCESS);
     }
 
     // update the shape location according to the user input key
@@ -238,28 +242,50 @@ void usr2_readInput(int sigNum) {
  * sig handler for the signal ALARM - move the rectangle down
  */
 void alarm_moveDown() {
+    signal(SIGALRM, alarm_moveDown);
 
+    // clear the board and initialize a new one
+    system("clear");
+
+    //move the shape down (like when we press 's'
+    if (canMove(gameRectangle.left.row + 1, gameRectangle.right.row + 1)) {
+        removeRectangleFromBoard();
+        //update the place of the new rectangle
+        gameRectangle.left.row = gameRectangle.left.row + 1;
+        gameRectangle.middle.row = gameRectangle.middle.row + 1;
+        gameRectangle.right.row = gameRectangle.right.row + 1;
+        //puting the new rectangle in the board
+        updateRectangleInBoard();
+    } else {  //if we got to the end of the board
+        removeRectangleFromBoard();
+        initializeRectanglePos();
+        updateRectangleInBoard();
+    }
+
+    PrintingBoard();
+    alarm(1);
 }
 
 int main() {
+    // clear the board and initialize a new one
+    system("clear");
     running = 1;
+
+    //define the action of SIGUSR2 and SIGALRM
+    signal(SIGUSR2, usr2_readInput);
+    signal(SIGALRM, alarm_moveDown);
+
     //drawing the table
     DrawingBoard();
     PrintingBoard();
     initializeRectanglePos();
     updateRectangleInBoard();
 
-    //todo check if need to == -1 and print a message
-    //define the action of SIGUSR2 and SIGALRM
-    // define what to do next time receives SIGUSR2
-    signal(SIGUSR2, usr2_readInput);
-
-    // define what to do next time receives SIGALRM
-    signal(SIGALRM, alarm_moveDown);
-
     // set an alarm for one second
     alarm(1);
 
     // always wait for signals until the user press 'q'
-    while (1) { pause(); }
+    while (1) {
+        pause();
+    }
 }
