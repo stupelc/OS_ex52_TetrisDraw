@@ -134,7 +134,7 @@ void UpdateShapeLocation(int key) {
     //move the rectangle on the board according to the key
 
     switch (key){
-        case RIGHT_KEY:
+        case RIGHT_KEY: {
             //first check if can move to the place the user wants
             if (canMove(gameRectangle.left.column + 1, gameRectangle.right.column + 1)) {
                 removeRectangleFromBoard();
@@ -145,8 +145,9 @@ void UpdateShapeLocation(int key) {
                 //puting the new rectangle in the board
                 updateRectangleInBoard();
             }
+        }
             break;
-        case LEFT_KEY:
+        case LEFT_KEY: {
             if (canMove(gameRectangle.left.column - 1, gameRectangle.right.column - 1)) {
                 removeRectangleFromBoard();
                 //update the place of the new rectangle
@@ -156,10 +157,45 @@ void UpdateShapeLocation(int key) {
                 //puting the new rectangle in the board
                 updateRectangleInBoard();
             }
+        }
             break;
-        case FLIP_KEY:
+        case FLIP_KEY: {
+            //check if the rectangle is horizontal or vertical
+            int isHorizontal;
+            if (gameRectangle.right.row == gameRectangle.left.row) {
+                isHorizontal = 1;
+            } else {
+                isHorizontal = 0;
+            }
+
+            if(isHorizontal){ //make it vertical
+                removeRectangleFromBoard();
+
+                //update the place of the new rectangle
+                gameRectangle.left.row = gameRectangle.middle.row-1;
+                gameRectangle.right.row = gameRectangle.middle.row+1;
+
+                gameRectangle.left.column = gameRectangle.middle.column;
+                gameRectangle.right.column = gameRectangle.middle.column;
+
+                //puting the new rectangle in the board
+                updateRectangleInBoard();
+            } else { //make it horizontal
+                removeRectangleFromBoard();
+
+                //update the place of the new rectangle
+                gameRectangle.left.row = gameRectangle.middle.row;
+                gameRectangle.right.row = gameRectangle.middle.row;
+
+                gameRectangle.left.column = gameRectangle.middle.column-1;
+                gameRectangle.right.column = gameRectangle.middle.column+1;
+
+                //puting the new rectangle in the board
+                updateRectangleInBoard();
+            }
+        }
             break;
-        case DOWN_KEY:
+        case DOWN_KEY: {
             if (canMove(gameRectangle.left.row + 1, gameRectangle.right.row + 1)) {
                 removeRectangleFromBoard();
                 //update the place of the new rectangle
@@ -173,6 +209,7 @@ void UpdateShapeLocation(int key) {
                 initializeRectanglePos();
                 updateRectangleInBoard();
             }
+        }
             break;
     }
 
