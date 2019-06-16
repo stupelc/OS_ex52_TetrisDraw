@@ -18,15 +18,15 @@
 
 
 struct pos {
-    int row, column;
+    int i, j;
 } pos;
 
 struct rectangle {
-    struct pos left, middle, right; //left, middle and right position
+    struct pos left, middle, right; //left, middle and right position of the rectangle
 } gameRectangle;
 
 struct gameRectangle; //the rectangle
-char table[20][20]; //game table
+char table[SIZE][SIZE]; //game table
 int running;
 
 /**
@@ -75,14 +75,14 @@ void PrintingBoard() {
  */
 void initializeRectanglePos() {
     //initialize rectangle row place to the top of the border - first line
-    gameRectangle.left.row = 0;
-    gameRectangle.middle.row = 0;
-    gameRectangle.right.row = 0;
+    gameRectangle.left.i = 0;
+    gameRectangle.middle.i = 0;
+    gameRectangle.right.i = 0;
 
     //initialize rectangle column
-    gameRectangle.left.column = (SIZE / 2) - 3; // index 7 (place 8)
-    gameRectangle.middle.column = (SIZE / 2) - 2; //index 8 (place 9)
-    gameRectangle.right.column = (SIZE / 2) - 1; //index 9 (place 10)
+    gameRectangle.left.j = (SIZE / 2) - 3; // index 7 (place 8)
+    gameRectangle.middle.j = (SIZE / 2) - 2; //index 8 (place 9)
+    gameRectangle.right.j = (SIZE / 2) - 1; //index 9 (place 10)
 }
 
 /**
@@ -90,13 +90,13 @@ void initializeRectanglePos() {
  */
 void updateRectangleInBoard() {
     //update the left position in the board
-    table[gameRectangle.left.row][gameRectangle.left.column] = '-';
+    table[gameRectangle.left.i][gameRectangle.left.j] = '-';
 
     //update the middle position in the board
-    table[gameRectangle.middle.row][gameRectangle.middle.column] = '-';
+    table[gameRectangle.middle.i][gameRectangle.middle.j] = '-';
 
     //update the right position in the board
-    table[gameRectangle.right.row][gameRectangle.right.column] = '-';
+    table[gameRectangle.right.i][gameRectangle.right.j] = '-';
 }
 
 /**
@@ -104,13 +104,13 @@ void updateRectangleInBoard() {
  */
 void removeRectangleFromBoard() {
     //remove the left position from the board
-    table[gameRectangle.left.row][gameRectangle.left.column] = ' ';
+    table[gameRectangle.left.i][gameRectangle.left.j] = ' ';
 
     //remove the middle position from the board
-    table[gameRectangle.middle.row][gameRectangle.middle.column] = ' ';
+    table[gameRectangle.middle.i][gameRectangle.middle.j] = ' ';
 
     //remove the right position from the board
-    table[gameRectangle.right.row][gameRectangle.right.column] = ' ';
+    table[gameRectangle.right.i][gameRectangle.right.j] = ' ';
 }
 
 /**
@@ -138,24 +138,24 @@ void UpdateShapeLocation(int key) {
     switch (key){
         case RIGHT_KEY: {
             //first check if can move to the place the user wants
-            if (canMove(gameRectangle.left.column + 1, gameRectangle.right.column + 1)) {
+            if (canMove(gameRectangle.left.j + 1, gameRectangle.right.j + 1)) {
                 removeRectangleFromBoard();
                 //update the place of the new rectangle
-                gameRectangle.left.column = gameRectangle.left.column + 1;
-                gameRectangle.middle.column = gameRectangle.middle.column + 1;
-                gameRectangle.right.column = gameRectangle.right.column + 1;
+                gameRectangle.left.j = gameRectangle.left.j + 1;
+                gameRectangle.middle.j = gameRectangle.middle.j + 1;
+                gameRectangle.right.j = gameRectangle.right.j + 1;
                 //puting the new rectangle in the board
                 updateRectangleInBoard();
             }
         }
             break;
         case LEFT_KEY: {
-            if (canMove(gameRectangle.left.column - 1, gameRectangle.right.column - 1)) {
+            if (canMove(gameRectangle.left.j - 1, gameRectangle.right.j - 1)) {
                 removeRectangleFromBoard();
                 //update the place of the new rectangle
-                gameRectangle.left.column = gameRectangle.left.column - 1;
-                gameRectangle.middle.column = gameRectangle.middle.column - 1;
-                gameRectangle.right.column = gameRectangle.right.column - 1;
+                gameRectangle.left.j = gameRectangle.left.j - 1;
+                gameRectangle.middle.j = gameRectangle.middle.j - 1;
+                gameRectangle.right.j = gameRectangle.right.j - 1;
                 //puting the new rectangle in the board
                 updateRectangleInBoard();
             }
@@ -164,7 +164,7 @@ void UpdateShapeLocation(int key) {
         case FLIP_KEY: {
             //check if the rectangle is horizontal or vertical
             int isHorizontal;
-            if (gameRectangle.right.row == gameRectangle.left.row) {
+            if (gameRectangle.right.i == gameRectangle.left.i) {
                 isHorizontal = 1;
             } else {
                 isHorizontal = 0;
@@ -174,11 +174,11 @@ void UpdateShapeLocation(int key) {
                 removeRectangleFromBoard();
 
                 //update the place of the new rectangle
-                gameRectangle.left.row = gameRectangle.middle.row-1;
-                gameRectangle.right.row = gameRectangle.middle.row+1;
+                gameRectangle.left.i = gameRectangle.middle.i-1;
+                gameRectangle.right.i = gameRectangle.middle.i+1;
 
-                gameRectangle.left.column = gameRectangle.middle.column;
-                gameRectangle.right.column = gameRectangle.middle.column;
+                gameRectangle.left.j = gameRectangle.middle.j;
+                gameRectangle.right.j = gameRectangle.middle.j;
 
                 //puting the new rectangle in the board
                 updateRectangleInBoard();
@@ -186,11 +186,11 @@ void UpdateShapeLocation(int key) {
                 removeRectangleFromBoard();
 
                 //update the place of the new rectangle
-                gameRectangle.left.row = gameRectangle.middle.row;
-                gameRectangle.right.row = gameRectangle.middle.row;
+                gameRectangle.left.i = gameRectangle.middle.i;
+                gameRectangle.right.i = gameRectangle.middle.i;
 
-                gameRectangle.left.column = gameRectangle.middle.column-1;
-                gameRectangle.right.column = gameRectangle.middle.column+1;
+                gameRectangle.left.j = gameRectangle.middle.j-1;
+                gameRectangle.right.j = gameRectangle.middle.j+1;
 
                 //puting the new rectangle in the board
                 updateRectangleInBoard();
@@ -198,12 +198,12 @@ void UpdateShapeLocation(int key) {
         }
             break;
         case DOWN_KEY: {
-            if (canMove(gameRectangle.left.row + 1, gameRectangle.right.row + 1)) {
+            if (canMove(gameRectangle.left.i + 1, gameRectangle.right.i + 1)) {
                 removeRectangleFromBoard();
                 //update the place of the new rectangle
-                gameRectangle.left.row = gameRectangle.left.row + 1;
-                gameRectangle.middle.row = gameRectangle.middle.row + 1;
-                gameRectangle.right.row = gameRectangle.right.row + 1;
+                gameRectangle.left.i = gameRectangle.left.i + 1;
+                gameRectangle.middle.i = gameRectangle.middle.i + 1;
+                gameRectangle.right.i = gameRectangle.right.i + 1;
                 //puting the new rectangle in the board
                 updateRectangleInBoard();
             } else {  //if we got to the end of the board
@@ -248,12 +248,12 @@ void alarm_moveDown() {
     system("clear");
 
     //move the shape down (like when we press 's'
-    if (canMove(gameRectangle.left.row + 1, gameRectangle.right.row + 1)) {
+    if (canMove(gameRectangle.left.i + 1, gameRectangle.right.i + 1)) {
         removeRectangleFromBoard();
         //update the place of the new rectangle
-        gameRectangle.left.row = gameRectangle.left.row + 1;
-        gameRectangle.middle.row = gameRectangle.middle.row + 1;
-        gameRectangle.right.row = gameRectangle.right.row + 1;
+        gameRectangle.left.i = gameRectangle.left.i + 1;
+        gameRectangle.middle.i = gameRectangle.middle.i + 1;
+        gameRectangle.right.i = gameRectangle.right.i + 1;
         //puting the new rectangle in the board
         updateRectangleInBoard();
     } else {  //if we got to the end of the board
@@ -285,7 +285,7 @@ int main() {
     alarm(1);
 
     // always wait for signals until the user press 'q'
-    while (1) {
+    while (running) {
         pause();
     }
 }
